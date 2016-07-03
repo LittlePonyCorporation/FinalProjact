@@ -1,0 +1,80 @@
+﻿@{ int a = 5;
+    var idLot = Request["idLot"];
+    Guid id = default(Guid);
+    if (string.IsNullOrWhiteSpace(idLot) || !Guid.TryParse(idLot, out id))
+    {
+        a = 1;
+    }
+}
+
+@if (IsPost)
+{
+    var isForm = Request["isForm"];
+    var name = Request["name"];
+    var desc = Request["desc"];
+
+    if (isForm == "true")
+    {
+        if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(desc))
+        {
+            a = 2;
+        }
+        else
+        {
+            var changeLot = new _SuperGirl_Auction.ASP.NET.Models.LotPL().Change(id, name, desc);
+            if (changeLot)
+            {
+                a = 0;
+            }
+            else
+            {
+                a = 4;
+            }
+        }
+    }
+    else
+    {
+        a = 3;
+    }
+}
+else
+{
+    a = 1;
+}
+@if (a > 1)
+{
+    switch (a)
+    {
+        case 2:
+            <h3>Некорректные данные</h3>
+            break;
+        case 3:
+            <h3>Внесите изменения</h3>
+            break;
+        case 4:
+            <h3>Данные не изменены</h3>
+            break;
+    }
+    var getLot = new _SuperGirl_Auction.ASP.NET.Models.LotPL().Get(id);
+    <form action="~/Pages/ChangeLot" method="post">
+        <input type="hidden" name="idLot" value=@id />
+        <input type="hidden" name="isForm" value="true" />
+        <label for="Name">Название</label>
+        <input type="text" name="name" id="Name" value=@getLot.Name required />
+        <label for="Desc">Описанеи</label>
+        <input type="text" name="desc" id="Desc" value=@getLot.Description required />
+        <input type="submit" name="ok" value="Изменить" class="button"/>
+    </form>
+}
+
+@if (a == 1)
+{
+    <h3>Что-то пошло не так</h3>
+}
+@if (a == 0)
+{
+    <h3>Данные изменены</h3>
+    <form action="~/Pages/Index" method="get">
+        <button type="submit" class="button">На главную</button>
+    </form>
+}

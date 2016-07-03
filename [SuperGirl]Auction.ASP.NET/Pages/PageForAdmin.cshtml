@@ -1,0 +1,142 @@
+﻿@section content{
+    <link href="~/Content/ForTable.css" rel="stylesheet" />
+    <link href="~/Content/ForPageAdmin.css" rel="stylesheet" />
+}
+@if (IsPost)
+{
+    var onDelete = Request["onDelete"];
+    var uId = Request["id"];
+    var onChange = Request["onChange"];
+    var role = Request["role"];
+    Guid id;
+    if (!Guid.TryParse(uId, out id))
+    {
+        <h3>Что-то пошло не так</h3>
+    }
+    else
+    {
+        var loginId = new _SuperGirl_Auction.ASP.NET.Models.RegistratePL().GetLoginId(id);
+        if (onDelete == "true")
+        {
+            var alllots = new _SuperGirl_Auction.ASP.NET.Models.RelationPL().GetLotId(id).ToArray();
+            if (new _SuperGirl_Auction.ASP.NET.Models.UserPL().Delete(id))
+            {
+                if (new _SuperGirl_Auction.ASP.NET.Models.RegistratePL().Delete(id))
+                {
+                    <h3>error</h3>
+                }
+                for (int i = 0; i < alllots.Length; i++)
+                {
+                    new _SuperGirl_Auction.ASP.NET.Models.LotPL().Delete(alllots[i]);
+                }
+            }
+            else
+            {
+                <h3>Error</h3>
+            }
+        }
+        if (onChange == "true")
+        {
+            if (string.IsNullOrWhiteSpace(role))
+            {
+                <h3>Что-то пошло не так</h3>
+            }
+            else
+            {
+                int roleId = int.Parse(role);
+                if (!new _SuperGirl_Auction.ASP.NET.Models.RegistratePL().ChangeRole(loginId, roleId))
+                {
+                    <h3>error</h3>
+                }
+            }
+        }
+    }
+}
+@{
+    var allUsers = new _SuperGirl_Auction.ASP.NET.Models.UserPL().GetAll().ToArray();
+
+}
+<table>
+    @for (int i = 0; i < allUsers.Length; i++)
+    {
+        var allLotsId = new _SuperGirl_Auction.ASP.NET.Models.RelationPL().GetLotId(allUsers[i].ID).ToArray();
+        var loginId = new _SuperGirl_Auction.ASP.NET.Models.RegistratePL().GetLoginId(allUsers[i].ID);
+        var registrate = new _SuperGirl_Auction.ASP.NET.Models.RegistratePL().GetUser(loginId);
+        <tr>
+            <td>
+                @registrate.Login
+            </td>
+            <td>
+                @allUsers[i].Name
+            </td>
+            <td>
+                @allUsers[i].Surname
+            </td>
+            <td>
+                <ul>
+                    <li class="top-menu top-menu-style">
+                        <a href="#">Лоты</a>
+                        <ul>
+                            @if (allLotsId.Length == 0)
+                            {
+                                <li class="in-menu in-menu-style">нет лотов</li>
+                            }
+                            else
+                            {
+                                for (int j = 0; j < allLotsId.Length; j++)
+                                {
+                                    var lot = new _SuperGirl_Auction.ASP.NET.Models.LotPL().Get(allLotsId[j]);
+                                    <li class="in-menu in-menu-style">@lot.Name</li>
+                                }
+                            }
+                        </ul>
+                    </li>
+                </ul>
+
+            </td>
+            <td>
+                <ul>
+                    @if (registrate.RoleId == 1)
+                    {
+                        <li class="top-menu top-menu-style">
+                            <a href="#">Aдминистратор</a>
+                            <ul>
+                                <li class="in-menu in-menu-style">
+                                    <form action="~/Pages/PageForAdmin" method="post">
+                                        <input type="hidden" name="role" value="2" />
+                                        <input type="hidden" name="id" value=@allUsers[i].ID />
+                                        <input type="hidden" name="onChange" value="true" />
+                                        <button type="submit">Пользователь</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="top-menu top-menu-style">
+                            <a href="#">Пользователь</a>
+                            <ul>
+                                <li class="in-menu in-menu-style">
+                                    <form action="~/Pages/PageForAdmin" method="post">
+                                        <input type="hidden" name="role" value="1" />
+                                        <input type="hidden" name="id" value=@allUsers[i].ID />
+                                        <input type="hidden" name="onChange" value="true" />
+                                        <button type="submit">Администратор</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    }
+                </ul>
+            </td>
+            <td>
+                <form action="~/Pages/PageForAdmin" method="post">
+                    <input type="hidden" name="onDelete" value="true" />
+                    <input type="hidden" name="id" value=@allUsers[i].ID />
+                    <button type="submit" onclick="return confirm('Удалить?')" class="button-delete button-delete-s">X</button>
+                </form>
+            </td>
+        </tr>
+    }
+</table>

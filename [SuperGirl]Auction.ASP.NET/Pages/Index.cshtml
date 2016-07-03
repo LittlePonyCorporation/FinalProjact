@@ -1,0 +1,51 @@
+﻿@section content{
+    <link href="~/Content/LotStyle.css" rel="stylesheet" />
+}
+@{
+    var allLots = new _SuperGirl_Auction.ASP.NET.Models.LotPL().GetAll().ToArray();
+    var img = new _SuperGirl_Auction.ASP.NET.Models.ImagePL();
+}
+<div class="result">
+    @for (int i = 0; i < allLots.Length; i++)
+    {
+        var buylot = new _SuperGirl_Auction.ASP.NET.Models.BuyPL().Get(allLots[i].ID);
+        var archive = new _SuperGirl_Auction.ASP.NET.Models.BuyPL().GetUserAr(allLots[i].ID);
+
+        if (archive == default(Guid))
+        {
+            if (buylot != null && DateTime.Now.Ticks-buylot.BuyTime.Ticks>600000000)
+            {
+                new _SuperGirl_Auction.ASP.NET.Models.BuyPL().AddInArchive(buylot);
+                new _SuperGirl_Auction.ASP.NET.Models.BuyPL().Delete(buylot.LogId);
+            }
+            else
+            {
+                <div class="lot lot-style">
+                    @{Guid Image = img.GetImageForLot(allLots[i].ID);}
+                    <div class="image">
+                        @if (Image != default(Guid))
+                        {
+                            <a href="~/Pages/Image/Download?id=@Image">
+                                <img class="images" src="~/Pages/Image/View?id=@Image" />
+                            </a>
+                        }
+                        else
+                        {
+                            Guid d = Guid.Parse("30251a09-5dfc-4fd5-8d62-540196c03685");
+                            <a href="~/Pages/Image/Download?id=@d">
+                                <img class="images" src="~/Pages/Image/View?id=@d" />
+                            </a>
+                        }
+                    </div>
+                    <h1 class="name name-style">@allLots[i].Name</h1>
+                    <form action="~/Pages/Lot/LotInfo" method="post">
+                        <input type="hidden" name="id" value=@Image />
+                        <input type="hidden" name="lotId" value=@allLots[i].ID />
+                        <input type="hidden" name="isLot" value="true" />
+                        <button type="submit" class="button">Посмотреть</button>
+                    </form>
+                </div>
+                                }
+                            }
+                        }
+</div>

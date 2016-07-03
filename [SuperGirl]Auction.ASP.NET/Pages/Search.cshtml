@@ -1,0 +1,82 @@
+﻿@if (IsPost)
+{
+    Layout = null;
+    var allLots = new _SuperGirl_Auction.ASP.NET.Models.LotPL().GetAll().ToArray();
+    var img = new _SuperGirl_Auction.ASP.NET.Models.ImagePL();
+    int a = 0;
+    string search = Request["search"];
+
+    if (string.IsNullOrWhiteSpace(search))
+    {
+        a = 1;
+    }
+    else
+    {
+        List<_SuperGirl_Auction.Entites.Lot>
+ListofLots = new List<_SuperGirl_Auction.Entites.Lot>
+    ();
+
+        for (int i = 0; i < allLots.Length; i++)
+        {
+            if (String.Compare(search.ToLower(), allLots[i].Name.ToLower()) == 0)
+            {
+                ListofLots.Add(allLots[i]);
+            }
+        }
+
+        allLots = ListofLots.ToArray();
+    }
+    if (allLots.Length == 0)
+    {
+        a = 2;
+    }
+    if (IsAjax)
+    {
+        Layout = null;
+        if (a != 0)
+        {
+            switch (a)
+            {
+                case 1:
+                    <h1>Некорректный запрос</h1>
+                    break;
+                case 2:
+                    <h1>По вашему запросу ничего не найдено</h1>
+                    break;
+            }
+        }
+        else
+        {
+            for (int i = 0; i < allLots.Length; i++)
+            {
+                {
+                    <div class="lot lot-style">
+                        @{Guid Image = img.GetImageForLot(allLots[i].ID);}
+                        <div class="image">
+                            @if (Image != default(Guid))
+                            {
+                                <a href="~/Pages/Image/Download?id=@Image">
+                                    <img class="images" src="~/Pages/Image/View?id=@Image" />
+                                </a>
+                            }
+                            else
+                            {
+                                Guid d = Guid.Parse("30251a09-5dfc-4fd5-8d62-540196c03685");
+                                <a href="~/Pages/Image/Download?id=@d">
+                                    <img class="images" src="~/Pages/Image/View?id=@d" />
+                                </a>
+                            }
+                        </div>
+                        <h1 class="name name-style">@allLots[i].Name</h1>
+                        <form action="~/Pages/Lot/LotInfo" method="post">
+                            <input type="hidden" name="id" value=@Image />
+                            <input type="hidden" name="lotId" value=@allLots[i].ID />
+                            <button type="submit" class="button">Посмотреть</button>
+                        </form>
+                    </div>
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }

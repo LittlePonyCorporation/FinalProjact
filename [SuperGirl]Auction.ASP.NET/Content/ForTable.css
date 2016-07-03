@@ -1,0 +1,44 @@
+﻿td{
+    width:auto;
+    height:auto;
+    padding-left:15px;
+    font-size:20px;
+    font-weight:100;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    margin-left:20px;
+    margin-right:0;
+}
+
+tr {
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+    box-sizing: content-box;
+}
+
+.button {
+   -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+    box-sizing: content-box;
+    padding:1px 1px;
+    font-weight:500;
+}
+button a{
+ text-decoration:none;
+ color:#063f68;
+ font-size:20px;
+}
+
+.button-delete{
+    width: 30px;
+    height:30px;
+    font-size:15px;
+    font-weight:bold;
+    text-align:center;
+    border-radius:15px;
+}
+
+.button-delete-s{
+    background-color:#ffffff;
+    border:solid #cf0449;
+    color:#cf0449;
+}

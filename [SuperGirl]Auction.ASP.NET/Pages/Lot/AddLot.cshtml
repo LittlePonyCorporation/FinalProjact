@@ -1,0 +1,23 @@
+﻿@if(IsPost)
+{
+    var userId = Request["id"];
+    var name = Request["name"];
+    var description = Request["description"];
+    Guid id;
+    if (string.IsNullOrWhiteSpace(name)||string.IsNullOrWhiteSpace(description)|| Guid.TryParse(userId, out id))
+    {
+        Response.SetStatus(HttpStatusCode.BadRequest);
+        return;
+    }
+
+    var newLotId = new _SuperGirl_Auction.ASP.NET.Models.LotPL().Create(new _SuperGirl_Auction.Entites.Lot(name, description));
+    if (newLotId != default(Guid))
+    {
+        var newRelation = new _SuperGirl_Auction.ASP.NET.Models.RelationPL().Create(new _SuperGirl_Auction.Entites.Relation(id, newLotId));
+        if (!newRelation)
+        {
+            Response.SetStatus(HttpStatusCode.BadRequest);
+            return;
+        }
+    }
+}

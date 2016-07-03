@@ -1,0 +1,29 @@
+﻿@if (!User.Identity.IsAuthenticated)
+{
+    Response.SetStatus(HttpStatusCode.Unauthorized);
+    return;
+}
+@if (IsPost)
+{
+    Layout = null;
+    var lotId = Request["lodId"];
+    var youId = Request["youId"];
+    Guid lId, yId;
+
+    if (!Guid.TryParse(lotId, out lId) || !Guid.TryParse(youId,out yId))
+    {
+        <h3>Error</h3>
+    }
+    else
+    {
+        var buy = new _SuperGirl_Auction.ASP.NET.Models.BuyPL().Create(new _SuperGirl_Auction.Entites.Buy(lId, yId));
+        if (buy)
+        {
+            if (IsAjax)
+            {
+                <h3>Начались торги</h3>
+            }
+        }
+    }
+
+}

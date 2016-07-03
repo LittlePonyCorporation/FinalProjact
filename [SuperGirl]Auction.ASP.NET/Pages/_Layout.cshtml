@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link href="~/Content/Layout.css" rel="stylesheet" />
+    <link href="~/Content/ForForms.css" rel="stylesheet" />
+    @RenderSection("content", required: false)
+</head>
+<body>
+    <a href="~/Pages/Index"><header class="main-title main-tytle-style">The Good Buy</header></a>
+    <div class="menu">
+        <div class="user">
+            @if (User.Identity.IsAuthenticated)
+            {
+                if (User.IsInRole("Admin"))
+                {
+                    <a href="~/Pages/PageForAdmin">Администрирование♥</a>
+                }
+                else
+                {
+                    <a href="~/Pages/Pasport">Личный кабинет♥</a>
+                }
+                        @User.Identity.Name
+                        <a href="~/Pages/Logout"> ♥Выйти </a>
+            }
+            else
+            {
+                <button class="button login">Войти</button>
+            }
+        </div>
+        <div class="serch-lot">
+            @RenderPage("_SearchPartial.cshtml")
+        </div>
+    </div>
+    <section class="main-content main-content-style">
+        @RenderBody()
+    </section>
+
+    <script src="~/scripts/jquery-2.2.3.min.js"></script>
+    <script src="~/scripts/jquery.unobtrusive-ajax.js"></script>
+    <script src="~/scripts/ForPage.js"></script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

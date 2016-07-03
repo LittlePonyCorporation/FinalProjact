@@ -1,0 +1,150 @@
+﻿@section content{
+    <link href="~/Content/ForTable.css" rel="stylesheet" />
+    <link href="~/Content/LotStyle.css" rel="stylesheet" />
+    <link href="~/Content/Pasport.css" rel="stylesheet" />
+}
+@section scripts{
+    <script src="~/scripts/Pasport.js"></script>
+}
+@if (!User.Identity.IsAuthenticated)
+{
+    Response.SetStatus(HttpStatusCode.Unauthorized);
+    return;
+}
+@{  string login = User.Identity.Name;
+    Guid loginId = new _SuperGirl_Auction.ASP.NET.Models.RegistratePL().GetLoginId(login);
+    Guid id = new _SuperGirl_Auction.ASP.NET.Models.UserPL().GetUserId(loginId);
+    var user = new _SuperGirl_Auction.ASP.NET.Models.UserPL().Get(id);
+    var lots = new _SuperGirl_Auction.ASP.NET.Models.RelationPL().GetLotId(id);
+}
+@if (IsPost)
+{
+    int a = 0;
+    var lotId = Request["idLot"];
+    Guid Lid = default(Guid);
+    if (!Guid.TryParse(lotId, out Lid))
+    {
+        a = 1;
+    }
+    else
+    {
+        var deleteLot = new _SuperGirl_Auction.ASP.NET.Models.LotPL().Delete(Lid);
+        if (!deleteLot)
+        {
+            a = 1;
+        }
+        if (a == 1)
+        {
+            <h3>Удалить не получилось</h3>
+        }
+    }
+}
+<div>
+    <div class="pasport pas">
+        <table name="user">
+            <caption></caption>
+            <tr>
+                <td>
+                    Имя:
+                </td>
+                <td>
+                    @user.Name
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Фамилия:
+                </td>
+                <td>
+                    @user.Surname
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Почта:
+                </td>
+                <td>
+                    @user.Mail
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <form action="~/Pages/ChangeUser" method="post">
+                        <input type="hidden" name="userId" value=@user.ID />
+                        <button type="submit" class="button">Изменить</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="pasport NewLot">
+        <div>
+            <label for="Name">Новый лот</label>
+            <input type="text" class="name" id="Name" required />
+            <label for="Description">Описание</label>
+            <input type="text" class="description" id="Description" required />
+            <input type="hidden" class="id" value="@id" />
+            <button type="submit" class="butadd button">Добывить</button>
+        </div>
+    </div>
+    <table name="Lots">
+        <caption></caption>
+        @if (lots != null)
+        {
+            var lotsarray = lots.ToArray();
+            var img = new _SuperGirl_Auction.ASP.NET.Models.ImagePL();
+            for (int i = 0; i < lotsarray.Length; i++)
+            {
+                <tr id="Lots" class="lots">
+                    @{
+                        var lot = new _SuperGirl_Auction.ASP.NET.Models.LotPL().Get(lotsarray[i]);
+                        Guid Image = img.GetImageForLot(lotsarray[i]);
+                    }
+                    <td>
+                        <div class="lot">
+                            <div class="image">
+                                @if (Image != default(Guid))
+                                {
+                                    <a href="~/Pages/Image/Download?id=@Image">
+                                        <img class="images" src="~/Pages/Image/View?id=@Image" />
+                                    </a>
+                                }
+                                else
+                                {
+                                    Guid d = Guid.Parse("30251a09-5dfc-4fd5-8d62-540196c03685");
+                                    <a href="~/Pages/Image/Download?id=@d">
+                                        <img class="images" src="~/Pages/Image/View?id=@d" />
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <form action="~/Pages/Image/AddImage" method="post">
+                            <input type="hidden" name="idLot" value=@lotsarray[i] />
+                            <button type="submit" class="button-plus">+</button>
+                        </form>
+                    </td>
+                    <td>
+                        @lot.Name
+                    </td>
+                    <td>
+                        @lot.Description
+                    </td>
+                    <td>
+                        <form action="~/Pages/ChangeLot" method="post">
+                            <input type="hidden" name="idLot" value=@lotsarray[i] />
+                            <button type="submit" class="button">Изменить</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="~/Pages/Pasport" method="post">
+                            <input type="hidden" name="idLot" value=@lotsarray[i] />
+                            <button type="submit" onclick="return confirm('Удалить?')" class="button-delete button-delete-s">X</button>
+                        </form>
+                    </td>
+                </tr>
+                            }
+                        }
+    </table>
+</div>

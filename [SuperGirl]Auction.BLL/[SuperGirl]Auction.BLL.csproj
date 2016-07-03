@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{706A4FDA-B106-4B8E-BB34-00DFF29A4C1C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>_SuperGirl_Auction.BLL</RootNamespace>
+    <AssemblyName>[SuperGirl]Auction.BLL</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BuyBLL.cs" />
+    <Compile Include="ImageBLL.cs" />
+    <Compile Include="LotBLL.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegistrateBLL.cs" />
+    <Compile Include="RelationBLL.cs" />
+    <Compile Include="UserBLL.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\[SuperGirl]Auction.Entites\[SuperGirl]Auction.Entites.csproj">
+      <Project>{be0db786-176d-4dc2-80ac-52820198cb9b}</Project>
+      <Name>[SuperGirl]Auction.Entites</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Logger\Logger.csproj">
+      <Project>{85266a5c-14a7-43a6-a8ae-ffd3cf1627b8}</Project>
+      <Name>Logger</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\[SuperGirl]Auction.DAL\[SuperGirl]Auction.DAL.csproj">
+      <Project>{1d708424-54f1-4b67-8b34-f0ab4b6818cb}</Project>
+      <Name>[SuperGirl]Auction.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\[SuperGirl]Auction.InterfacesBLL\[SuperGirl]Auction.InterfacesBLL.csproj">
+      <Project>{7e4234cb-ca84-41bc-a950-56ab335713f4}</Project>
+      <Name>[SuperGirl]Auction.InterfacesBLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\[SuperGirl]Auction.InterfacesDAL\[SuperGirl]Auction.InterfacesDAL.csproj">
+      <Project>{d26814b9-b988-422b-806c-ce2bf3b6f595}</Project>
+      <Name>[SuperGirl]Auction.InterfacesDAL</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

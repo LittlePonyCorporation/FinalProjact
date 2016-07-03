@@ -1,0 +1,25 @@
+﻿input {
+    font-size: 25px;
+    margin: 12px 20px;
+    display: block;
+    width:230px;
+    height:20px;
+}
+
+label{
+    padding-left:15px;
+    font-size:20px;
+    font-weight:100;
+     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+.button {
+    width:170px;
+    height:auto;
+    margin: 10px 20px;
+    font-size: 20px;
+    font-weight:bolder;
+    background-color: #ffffff;
+    color: #424c65;
+    border-radius: 7px;
+}
+

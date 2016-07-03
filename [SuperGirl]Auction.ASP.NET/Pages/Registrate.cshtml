@@ -1,0 +1,81 @@
+﻿@{
+    int a = 0;
+    string login = Request["Login"];
+    var pass = Request["Pass"];
+    var pass2 = Request["Pass2"];
+    string name = Request["Name"];
+    string surname = Request["SName"];
+    string mail = Request["Mail"];
+}
+@if (!IsPost)
+{
+    a = 4;
+}
+else
+{
+    if (string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(pass) || string.IsNullOrWhiteSpace(pass2) || string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(surname) || string.IsNullOrWhiteSpace(mail) || pass != pass2)
+    {
+        a = 1;
+    }
+    else
+    {
+        var compare = new _SuperGirl_Auction.ASP.NET.Models.RegistratePL().GetLoginId(login);
+
+        if (compare != default(Guid))
+        {
+            a = 2;
+        }
+        else
+        {
+            var createLogin = new _SuperGirl_Auction.ASP.NET.Models.RegistratePL().Create(new _SuperGirl_Auction.Entites.Registrate(login, (string)pass, 2));
+
+            var createUser = new _SuperGirl_Auction.ASP.NET.Models.UserPL().Create(new _SuperGirl_Auction.Entites.User(name, surname, mail), createLogin);
+
+            if (createUser == default(Guid))
+            {
+                a = 3;
+            }
+        }
+    }
+}
+@if (a != 0)
+{
+    switch (a)
+    {
+        case 1:
+            <h1>Данные не корректны</h1>
+            break;
+        case 2:
+            <h1>Пользователь с таким логином уже зарегестрирован</h1>
+            break;
+        case 3:
+            <h1>Произошла ошибка</h1>
+            <h1>Повторите регистрацию</h1>
+            break;
+        default:
+            <h2>Введите данные</h2>
+            break;
+    }
+    <form action="~/Pages/Registrate" method="post">
+        <label for="Login">Логин</label>
+        <input type="text" id="Login" name="Login" value=@login required />
+        <label for="Pass">Пароль</label>
+        <input type="password" id="Pass" name="Pass" required />
+        <label for="Pass2">Пароль еще раз</label>
+        <input type="password" id="Pass2" name="Pass2" required />
+        <label for="Name">Имя</label>
+        <input type="text" id="Name" name="Name" value=@name required />
+        <label for="SName">Фамилия</label>
+        <input type="text" id="SName" name="SName" value=@surname required />
+        <label for="Mail">Почта</label>
+        <input type="text" id="Mail" name="Mail" value=@mail required />
+        <input type="submit" value="Сохранить" class="button"/>
+    </form>
+}
+else
+{
+    <h2>Регистрация прошла успешно</h2>
+    <form action="~/Pages/Index" method="get">
+        <button type="submit" class="button">На главную</button>
+    </form>
+}

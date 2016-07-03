@@ -1,0 +1,84 @@
+﻿@{
+    int a = 5;
+    var userId = Request["userId"];
+    Guid id = default(Guid);
+
+    if (string.IsNullOrWhiteSpace(userId) || !Guid.TryParse(userId, out id))
+    {
+        a = 1;
+    }
+}
+@if (IsPost)
+{
+    var isForm = Request["isForm"];
+    var name = Request["name"];
+    var sname = Request["sname"];
+    var mail = Request["mail"];
+
+    if (isForm != "true")
+    {
+        a = 3;
+    }
+    else
+    {
+        if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(sname) || string.IsNullOrWhiteSpace(mail))
+        {
+            a = 2;
+        }
+        else
+        {
+            var changeUser = new _SuperGirl_Auction.ASP.NET.Models.UserPL().Change(id, name, sname, mail);
+            if (!changeUser)
+            {
+                a = 4;
+            }
+            else
+            {
+                a = 0;
+            }
+        }
+    }
+}
+else
+{
+    a = 1;
+}
+@if (a > 1)
+{
+    switch (a)
+    {
+        case 2:
+            <h3>Некорректные данные</h3>
+            break;
+        case 3:
+            <h3>Внесите изменения</h3>
+            break;
+        case 4:
+            <h3>Данные не изменены</h3>
+            break;
+    }
+    var getUser = new _SuperGirl_Auction.ASP.NET.Models.UserPL().Get(id);
+    <form action="~/Pages/ChangeUser" method="post">
+        <input type="hidden" name="userId" value=@id />
+        <input type="hidden" name="isForm" value="true" />
+        <label for="Name">Имя</label>
+        <input type="text" name="name" id="Name" value=@getUser.Name required />
+        <label for="Surname">Фамилия</label>
+        <input type="text" name="sname" id="Surname" value=@getUser.Surname required />
+        <label for="Mail">Почта</label>
+        <input type="text" name="mail" id="Mail" value=@getUser.Mail required />
+        <input type="submit" name="ok" value="Изменить" class="button" />
+    </form>
+}
+
+@if (a == 1)
+{
+    <h3>Что-то пошло не так</h3>
+}
+@if (a == 0)
+{
+    <h3>Данные изменены</h3>
+    <form action="~/Pages/Index" method="get">
+        <button type="submit" class="button">На главную</button>
+    </form>
+}

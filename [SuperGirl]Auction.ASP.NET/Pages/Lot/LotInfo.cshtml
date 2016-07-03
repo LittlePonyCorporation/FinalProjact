@@ -1,0 +1,115 @@
+﻿@section scripts{
+    <script src="~/scripts/BuyLots.js"></script>
+}
+@section content{
+    <link href="~/Content/LotStyle.css" rel="stylesheet" />
+}
+@if (IsPost)
+{
+    var lot = Request["lotId"];
+    var stringId = Request["id"];
+    Guid imgid;
+    Guid lotId;
+    if (string.IsNullOrWhiteSpace(lot) || !Guid.TryParse(lot, out lotId) || lot == default(Guid).ToString())
+    {
+        <h3>Что-то пошло не так</h3>
+    }
+    else
+    {
+        string login = User.Identity.Name;
+        Guid loginId = new _SuperGirl_Auction.ASP.NET.Models.RegistratePL().GetLoginId(login);
+        Guid idAuthenticationUser = new _SuperGirl_Auction.ASP.NET.Models.UserPL().GetUserId(loginId);
+        var lotInfo = new _SuperGirl_Auction.ASP.NET.Models.LotPL().Get(lotId);
+        var userId = new _SuperGirl_Auction.ASP.NET.Models.RelationPL().GetUserId(lotId);
+        var user = new _SuperGirl_Auction.ASP.NET.Models.UserPL().Get(userId);
+        Guid.TryParse(stringId, out imgid);
+        var buylot = new _SuperGirl_Auction.ASP.NET.Models.BuyPL().Get(lotId);
+        var archive = new _SuperGirl_Auction.ASP.NET.Models.BuyPL().GetUserAr(lotId);
+        <div class="result">
+            <div class="lot lot-style">
+                <div class="image">
+                    @if (imgid != default(Guid))
+                    {
+                        <a href="~/Pages/Image/Download?id=@imgid">
+                            <img class="images" src="~/Pages/Image/View?id=@imgid" />
+                        </a>
+                    }
+                    else
+                    {
+                        Guid d = Guid.Parse("30251a09-5dfc-4fd5-8d62-540196c03685");
+                        <a href="~/Pages/Image/Download?id=@d">
+                            <img class="images" src="~/Pages/Image/View?id=@d" />
+                        </a>
+                    }
+                </div>
+                <h2 class="name name-style">
+                    @lotInfo.Name
+                </h2>
+            </div>
+        </div>
+        <h1 class="name name-style">
+            @lotInfo.Description
+        </h1>
+        if (buylot != null)
+        {
+            if (DateTime.Now.Ticks - buylot.BuyTime.Ticks > 600000000)
+            {
+                new _SuperGirl_Auction.ASP.NET.Models.BuyPL().Delete(buylot.LogId);
+                new _SuperGirl_Auction.ASP.NET.Models.BuyPL().AddInArchive(buylot);
+                <h3>Лот продан</h3>
+            }
+            else
+            {
+                if (idAuthenticationUser == userId)
+                {
+                    <h3>Ваш лот</h3>
+                }
+                else
+                {
+                    <h3>
+                        Продавец:
+                        @user.Name @user.Surname
+                    </h3>
+                    <h2>Перекупить</h2>
+                    <div class="new-buy">
+                        <input type="hidden" class="lotId" value="@lotId" />
+                        <input type="hidden" class="uId" value="@userId" />
+                        <button type="submit" id="Buy" class="button button-new-buy">+50</button>
+                    </div>
+                }
+            }
+        }
+        else
+            if (archive != default(Guid))
+        {
+            <h3>Лот продан</h3>
+        }
+        else
+        {
+            if (idAuthenticationUser == userId)
+            {
+                <h3>Ваш лот</h3>
+            }
+            else
+            {
+                <h3>
+                    Продавец:
+                    @user.Name @user.Surname
+                </h3>
+                <div class="buy">
+                    <input type="hidden" class="lodId" value="@lotId" />
+                    <input type="hidden" class="youId" value="@idAuthenticationUser" />
+                    <button type="submit" id="Buy" class="button button-buy">Купить</button>
+                </div>
+            }
+        }
+    }
+
+}
+else
+{
+<h3>Что-то пошло не так</h3>
+}
+<form action="~/Pages/Index" method="get">
+    <button type="submit" class="button">Назад</button>
+</form>

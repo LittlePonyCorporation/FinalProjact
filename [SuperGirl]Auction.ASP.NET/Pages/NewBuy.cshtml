@@ -1,0 +1,30 @@
+﻿@if (!User.Identity.IsAuthenticated)
+{
+    Response.SetStatus(HttpStatusCode.Unauthorized);
+    return;
+}
+@if (IsPost)
+{
+    Layout = null;
+    var lotId = Request["lotId"];
+    var userId = Request["userId"];
+
+    Guid lId, uId;
+
+    if (!Guid.TryParse(lotId, out lId) || !Guid.TryParse(userId, out uId))
+    {
+        <h3>Error</h3>
+    }
+    else
+    {
+        var buy = new _SuperGirl_Auction.ASP.NET.Models.BuyPL().Change(lId, uId);
+        if (buy)
+        {
+            if (IsAjax)
+            {
+                <h3>Вы предложили больше</h3>
+            }
+        }
+    }
+
+}

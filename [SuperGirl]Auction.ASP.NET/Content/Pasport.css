@@ -1,0 +1,20 @@
+﻿.pasport .description{
+display:inline-block;
+height: 60px;
+}
+
+.pasport label{
+    display:block;
+}
+
+.pasport{
+    margin-top:40px;
+}
+
+.pasport button{
+    display:block;
+}
+
+.pas{
+    margin-right:25%;
+}

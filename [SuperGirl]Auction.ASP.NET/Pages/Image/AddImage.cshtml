@@ -1,0 +1,67 @@
+﻿@section content{
+<link href="~/Content/AddImg.css" rel="stylesheet" />
+    }
+@if (IsPost)
+{
+    int a = 0;
+    var lotId = Request["idLot"];
+    Guid idLot = default(Guid);
+    if (string.IsNullOrWhiteSpace(lotId) || !Guid.TryParse(lotId, out idLot) || idLot == default(Guid))
+    {
+        a = 1;
+    }
+    else
+    {
+        var file = Request.Files["uploaded"];
+        var isForm = Request["isForm"];
+        if (isForm == "true")
+        {
+            if (file == null || file.ContentLength == 0)
+            {
+                a = 2;
+            }
+            else
+            {
+                byte[] imageContent = new byte[file.ContentLength];
+                file.InputStream.Read(imageContent, 0, imageContent.Length);
+                var imageFile = new _SuperGirl_Auction.ASP.NET.Models.ImagePL();
+                var addImg = imageFile.Create(new _SuperGirl_Auction.Entites.Image(imageContent, file.ContentType));
+                Guid oldImgId = imageFile.GetImageForLot(idLot);
+                if (oldImgId != default(Guid))
+                {
+                    imageFile.Delete(oldImgId);
+                }
+                if (imageFile.AddImage(idLot, addImg))
+                {
+                    a = 3;
+                }
+            }
+        }
+    }
+    if (a != 3)
+    {
+        switch (a)
+        {
+            case 1:
+                <h3>Что-то пошло не так</h3>
+                break;
+            case 2:
+                <h3>Проблемы с загрузкой файла</h3>
+                break;
+        }
+        <form action="~/Pages/Image/AddImage" method="post" enctype="multipart/form-data" role="form">
+            <input type="hidden" name="isForm" value="true" />
+            <input type="hidden" name="idLot" value=@idLot />
+            <div>
+                <label for="uploaded"> Выберите картинку</label>
+                <input type="file" id="uploaded" name="uploaded" required class="img" />
+            </div>
+            <button type="submit" id="submit" class="button">Загрузить</button>
+        </form>
+    }
+    else
+    {
+        <h3>Изображение добавлено</h3>
+    }
+
+}

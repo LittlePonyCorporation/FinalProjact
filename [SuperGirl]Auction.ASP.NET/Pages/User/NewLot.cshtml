@@ -1,0 +1,62 @@
+﻿@if (IsPost)
+{
+    Layout = null;
+    int a = 0;
+    var idU = Request["id"];
+    var name = Request["name"];
+    var description = Request["description"];
+    Guid id=default(Guid);
+    if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(description) || !Guid.TryParse(idU, out id))
+    {
+        a = 1;
+    }
+
+    var newLotId = new _SuperGirl_Auction.ASP.NET.Models.LotPL().Create(new _SuperGirl_Auction.Entites.Lot(name, description));
+    if (newLotId != default(Guid))
+    {
+        var newRelation = new _SuperGirl_Auction.ASP.NET.Models.RelationPL().Create(new _SuperGirl_Auction.Entites.Relation(id, newLotId));
+        if (!newRelation)
+        {
+            a = 2;
+        }
+        else
+        {
+            a = 3;
+        }
+    }
+    else
+    {
+        a = 2;
+    }
+
+    if (IsAjax)
+    {
+        if (a != 0)
+        {
+            switch (a)
+            {
+                case 1:
+                    <h1>Некорректные данные</h1>
+                    break;
+                case 2:
+                    <h1>Произошла ошибка</h1>
+                    <h1>Лот не добавлен</h1>
+                    break;
+                case 3:
+                    <h1>Лот успешно добавлен</h1>
+                    break;
+                case 4:
+                    <h1>Удалить не получилось</h1>
+                    <h1>Добавить новый лот</h1>
+                    break;
+            }
+        }
+        <div>
+            <label for="Name">Название лота</label>
+            <input type="text" class="name" id="Name" required />
+            <label for="Description">Описание</label>
+            <input type="text" class="description" id="Description" required />
+            <button type="submit" class="button butadd">Добывить</button>
+        </div>
+    }
+}

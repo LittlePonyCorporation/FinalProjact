@@ -1,0 +1,48 @@
+﻿@if (IsAjax)
+{
+    Layout = null;
+}
+@section content{
+    <link href="~/Content/ForForms.css" rel="stylesheet" />
+}
+@{int b = 0; }
+@if (IsPost)
+{
+    string login = Request["Login"];
+    string pass = Request["Pass"];
+
+    if (string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(pass))
+    {
+        b = 1;
+    }
+    else
+    {
+        int getPass = new _SuperGirl_Auction.ASP.NET.Models.RegistratePL().GetPass(login);
+        if (getPass == pass.GetHashCode())
+        {
+            FormsAuthentication.SetAuthCookie(login, createPersistentCookie: false);
+            Response.Redirect("~/Pages/Index");
+        }
+        else
+        {
+            Response.Redirect("~/Pages/Registrate");
+        }
+    }
+}
+else
+{
+    if (b == 1)
+    {
+        <h3>Введите данные еще раз</h3>
+    }
+    <form action="~/Pages/Login" method="post">
+        <label for="Login">Логин</label>
+        <input type="text" id="Login" name="Login" required />
+        <label for="Pass">Пароль</label>
+        <input type="password" id="Pass" name="Pass" required />
+        <input type="submit" value="Войти" class="button" />
+    </form>
+    <form action="~/Pages/Registrate" method="get">
+        <button type="submit" class="button">Регистрация</button>
+    </form>
+}

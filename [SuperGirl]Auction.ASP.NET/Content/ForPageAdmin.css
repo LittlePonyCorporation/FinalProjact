@@ -1,0 +1,43 @@
+﻿.top-menu{
+    list-style-type:none;
+    position:relative;
+}
+
+.top-menu>ul{
+    border-radius:5px;
+    position:absolute;
+    z-index:2;
+}
+
+.in-menu{
+    display:none;
+    height:30px;
+    list-style-type:none;
+}
+
+.top-menu>a{
+    color:#000000;
+    display:block;
+}
+
+.top-menu:hover .in-menu{
+    display:block;
+    width:auto;
+    height:auto;
+    padding:3px 5px;
+    font-size:20px;
+    border:solid 0.5px #808080;
+    margin-left:-50px;
+}
+
+.top-menu-style:hover .in-menu-style{
+    background:#f2fbfa;
+}
+
+.in-menu button{
+    width:150px;
+    color:#000000;
+    font-size:20px;
+    border:none;
+    background:transparent;
+}
